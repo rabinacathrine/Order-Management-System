@@ -1,136 +1,545 @@
 <?php
-    session_start();
-	include("connect.php");
-?>
-<?php
-
-	if(isset($_REQUEST['log']))
-	{
-		$u=$_REQUEST['user'];
-		$p=$_REQUEST['pass'];
-		
-		$sel="select * from admin where A_UserName='$u' and A_PassWord='$p'";
-		$ex=mysql_query($sel);
-		$fet=mysql_fetch_array($ex);
-		$row=mysql_num_rows($ex);
-		$n=$fet['A_UserName'];
-		if($row>0)
-		{
-			$_SESSION['usr']=$n;
-			header("location:index_2.php");
-		}
-		else
-		{
-			header("location:index.php");
+session_start();
+error_reporting(0);
+include('includes/config.php');
+if(isset($_GET['action']) && $_GET['action']=="add"){
+	$id=intval($_GET['id']);
+	if(isset($_SESSION['cart'][$id])){
+		$_SESSION['cart'][$id]['quantity']++;
+	}else{
+		$sql_p="SELECT * FROM addproduct WHERE P_Id={$id}";
+		$query_p=mysqli_query($con,$sql_p);
+		if(mysqli_num_rows($query_p)!=0){
+			$row_p=mysqli_fetch_array($query_p);
+			$_SESSION['cart'][$row_p['P_Id']]=array("quantity" => 1, "price" => $row_p['P_Price']);
+			header('location:index.php');
+		}else{
+			$message="Product ID is invalid";
 		}
 	}
+}
+
+
 ?>
 <!DOCTYPE html>
-<!--
-Template Name: Admin Lab Dashboard build with Bootstrap v2.3.1
-Template Version: 1.2
-Author: Mosaddek Hossain
-Website: http://thevectorlab.net/
--->
+<html lang="en">
+	<head>
+		<!-- Meta -->
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+	    <meta name="keywords" content="MediaCenter, Template, eCommerce">
+	    <meta name="robots" content="all">
 
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
-<!-- BEGIN HEAD -->
-<head>
-  <meta charset="utf-8" />
-  <title>Stock Tracking &amp; Complience Application</title>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta content="" name="description" />
-  <meta content="" name="author" />
-  <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link href="css/style.css" rel="stylesheet" />
-  <link href="css/style_responsive.css" rel="stylesheet" />
-  <link href="css/style_default.css" rel="stylesheet" id="style_color" />
-</head>
-<!-- END HEAD -->
-<!-- BEGIN BODY -->
-<body id="login-body">
-<div class="login-header">
-      <!-- BEGIN LOGO -->
-      <div id="logo" class="center">
-          <img src="img/logo.png" alt="logo" class="center" />
-      </div>
-      <!-- END LOGO -->
-  </div>
+	    <title>E-Shop Home Page</title>
 
-  <!-- BEGIN LOGIN -->
-  <div id="login">
-    <!-- BEGIN LOGIN FORM -->
-      <form id="loginform" class="form-vertical no-padding no-margin" >
-    <div class="lock">
-          <i class="icon-lock"></i>
-      </div>
-      <div class="control-wrap">
-          <h4>User Login</h4>
-          <div class="control-group">
-              <div class="controls">
-                  <div class="input-prepend">
-                      <span class="add-on"><i class="icon-user"></i></span><input id="input-username" type="text" placeholder="Username" name="user" />
-                  </div>
-              </div>
-          </div>
-          <div class="control-group">
-              <div class="controls">
-                  <div class="input-prepend">
-                      <span class="add-on"><i class="icon-key"></i></span><input id="input-password" type="password" name="pass" placeholder="Password" />
-                  </div>
-                  <div class="mtop10">
-                      <div class="block-hint pull-left small">
-                          <input type="checkbox" id=""> Remember Me
-                      </div>
-                      <div class="block-hint pull-right">
-                          <a href="javascript:;" class="" id="forget-password"></a>
-                      </div>
-                  </div>
+	    <!-- Bootstrap Core CSS -->
+	    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	    
+	    <!-- Customizable CSS -->
+	    <link rel="stylesheet" href="assets/css/main.css">
+	    <link rel="stylesheet" href="assets/css/green.css">
+	    <link rel="stylesheet" href="assets/css/owl.carousel.css">
+		<link rel="stylesheet" href="assets/css/owl.transitions.css">
+		<!--<link rel="stylesheet" href="assets/css/owl.theme.css">-->
+		<link href="assets/css/lightbox.css" rel="stylesheet">
+		<link rel="stylesheet" href="assets/css/animate.min.css">
+		<link rel="stylesheet" href="assets/css/rateit.css">
+		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 
-                  <div class="clearfix space5"></div>
-              </div>
+		<!-- Demo Purpose Only. Should be removed in production -->
+		<link rel="stylesheet" href="assets/css/config.css">
 
-          </div>
-      </div>
+		<link href="assets/css/green.css" rel="alternate stylesheet" title="Green color">
+		<link href="assets/css/blue.css" rel="alternate stylesheet" title="Blue color">
+		<link href="assets/css/red.css" rel="alternate stylesheet" title="Red color">
+		<link href="assets/css/orange.css" rel="alternate stylesheet" title="Orange color">
+		<link href="assets/css/dark-green.css" rel="alternate stylesheet" title="Darkgreen color">
+		<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+		<link href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,700' rel='stylesheet' type='text/css'>
+		
+		<!-- Favicon -->
+		<link rel="shortcut icon" href="assets/images/favicon.ico">
 
-      <input type="submit" id="login-btn" class="btn btn-block login-btn" name="log" value="Login" />
-    </form>
-    <!-- END LOGIN FORM -->        
-    <!-- BEGIN FORGOT PASSWORD FORM -->
-    <form id="forgotform" class="form-vertical no-padding no-margin hide" >
-      <p class="center">Enter your e-mail address below to reset your password.</p>
-      <div class="control-group">
-        <div class="controls">
-          <div class="input-prepend">
-            <span class="add-on"><i class="icon-envelope"></i></span><input id="input-email" type="text" placeholder="Email"  />
-          </div>
-        </div>
-        <div class="space20"></div>
-      </div>
-      <input type="button" id="forget-btn" class="btn btn-block login-btn" value="Submit" />
-    </form>
-    <!-- END FORGOT PASSWORD FORM -->
-  </div>
-  <!-- END LOGIN -->
-  <!-- BEGIN COPYRIGHT -->
-  <div id="login-copyright">
-      JTECH| Designed By:- c
-  </div>
-  <!-- END COPYRIGHT -->
-  <!-- BEGIN JAVASCRIPTS -->
-  <script src="js/jquery-1.8.3.min.js"></script>
-  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-  <script src="js/jquery.blockui.js"></script>
-  <script src="js/scripts.js"></script>
-  <script>
-    jQuery(document).ready(function() {     
-      App.initLogin();
-    });
-  </script>
-  <!-- END JAVASCRIPTS -->
+	</head>
+    <body class="cnt-home">
+	
+		
+	
+		<!-- ============================================== HEADER ============================================== -->
+<header class="header-style-1">
+<?php include('includes/top-header.php');?>
+<?php include('includes/main-header.php');?>
+<?php include('includes/menu-bar.php');?>
+</header>
+
+<!-- ============================================== HEADER : END ============================================== -->
+<div class="body-content outer-top-xs" id="top-banner-and-menu">
+	<div class="container">
+		<div class="furniture-container homepage-container">
+		<div class="row">
+		
+			<div class="col-xs-12 col-sm-12 col-md-3 sidebar">
+				<!-- ================================== TOP NAVIGATION ================================== -->
+	<?php include('includes/side-menu.php');?>
+<!-- ================================== TOP NAVIGATION : END ================================== -->
+			</div><!-- /.sidemenu-holder -->	
+			
+			<div class="col-xs-12 col-sm-12 col-md-9 homebanner-holder">
+				<!-- ========================================== SECTION – HERO ========================================= -->
+			
+<div id="hero" class="homepage-slider3">
+	<div id="owl-main" class="owl-carousel owl-inner-nav owl-ui-sm">
+		<div class="full-width-slider">	
+			<div class="item" style="background-image: url(assets/images/sliders/f3.jpg);">
+				<!-- /.container-fluid -->
+			</div><!-- /.item -->
+		</div><!-- /.full-width-slider -->
+	    
+	    <div class="full-width-slider">
+			<div class="item full-width-slider" style="background-image: url(assets/images/sliders/g7.jpg);">
+			</div><!-- /.item -->
+		</div><!-- /.full-width-slider -->
+
+	</div><!-- /.owl-carousel -->
+</div>
+			
+<!-- ========================================= SECTION – HERO : END ========================================= -->	
+				<!-- ============================================== INFO BOXES ============================================== -->
+<div class="info-boxes wow fadeInUp">
+	<div class="info-boxes-inner">
+		<div class="row">
+			<div class="col-md-6 col-sm-4 col-lg-4">
+				<div class="info-box">
+					<div class="row">
+						<div class="col-xs-2">
+						     <i class="icon fa fa-dollar"></i>
+						</div>
+						<div class="col-xs-10">
+							<h4 class="info-box-heading green">money back</h4>
+						</div>
+					</div>	
+					<h6 class="text">30 Day Money Back Guarantee.</h6>
+				</div>
+			</div><!-- .col -->
+
+			<div class="hidden-md col-sm-4 col-lg-4">
+				<div class="info-box">
+					<div class="row">
+						<div class="col-xs-2">
+							<i class="icon fa fa-truck"></i>
+						</div>
+						<div class="col-xs-10">
+							<h4 class="info-box-heading orange">free shipping</h4>
+						</div>
+					</div>
+					<h6 class="text">free ship-on oder over Rs. 600.00</h6>	
+				</div>
+			</div><!-- .col -->
+
+			<div class="col-md-6 col-sm-4 col-lg-4">
+				<div class="info-box">
+					<div class="row">
+						<div class="col-xs-2">
+							<i class="icon fa fa-gift"></i>
+						</div>
+						<div class="col-xs-10">
+							<h4 class="info-box-heading red">Special Sale</h4>
+						</div>
+					</div>
+					<h6 class="text">All items-sale up to 20% off </h6>	
+				</div>
+			</div><!-- .col -->
+		</div><!-- /.row -->
+	</div><!-- /.info-boxes-inner -->
+	
+</div><!-- /.info-boxes -->
+<!-- ============================================== INFO BOXES : END ============================================== -->		
+			</div><!-- /.homebanner-holder -->
+			
+		</div><!-- /.row -->
+
+		<!-- ============================================== SCROLL TABS ============================================== -->
+		<div id="product-tabs-slider" class="scroll-tabs inner-bottom-vs  wow fadeInUp">
+			<div class="more-info-tab clearfix">
+			   <h3 class="new-product-title pull-left">Featured Products</h3>
+				<ul class="nav nav-tabs nav-tab-line pull-right" id="new-products-1">
+					<li class="active"><a href="#all" data-toggle="tab">All</a></li>
+					<li><a href="#books" data-toggle="tab">Bike</a></li>
+					<li><a href="#furniture" data-toggle="tab">Clothing</a></li>
+				</ul><!-- /.nav-tabs -->
+			</div>
+
+			<div class="tab-content outer-top-xs">
+				<div class="tab-pane in active" id="all">			
+					<div class="product-slider">
+						<div class="owl-carousel home-owl-carousel custom-carousel owl-theme" data-item="4">
+<?php
+$ret=mysqli_query($con,"select * from addproduct");
+while ($row=mysqli_fetch_array($ret)) 
+{
+	# code...
+
+
+?>
+
+						    	
+		<div class="item item-carousel">
+			<div class="products">
+				
+	<div class="product">		
+		<div class="product-image">
+			<div class="image">
+				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>">
+				<!--<img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>" data-echo=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>"  width="180" height="300" alt=""></a>-->
+				<img src="supplier/img/<?php echo $row['P_Image']?>"width="180" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+			</div><!-- /.image -->			
+
+			                        		   
+		</div><!-- /.product-image -->
+			
+		
+		<div class="product-info text-left">
+			<h3 class="name"><a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><?php echo htmlentities($row['P_Name']);?></a></h3>
+			<div class="rating rateit-small"></div>
+			<div class="description"></div>
+
+			<div class="product-price">	
+				<span class="price">
+					Rs.<?php echo htmlentities($row['P_Price']);?>			</span>
+										     <span class="price-before-discount">Rs.<?php echo htmlentities($row['PS_Price']);?>	</span>
+									
+			</div><!-- /.product-price -->
+			
+		</div><!-- /.product-info -->
+					<div class="action"><a href="index.php?page=product&action=add&id=<?php echo $row['P_Id']; ?>" class="lnk btn btn-primary">Add to Cart</a></div>
+			</div><!-- /.product -->
+      
+			</div><!-- /.products -->
+		</div><!-- /.item -->
+	<?php } ?>
+
+			</div><!-- /.home-owl-carousel -->
+					</div><!-- /.product-slider -->
+				</div>
+
+
+
+
+	<div class="tab-pane" id="books">
+					<div class="product-slider">
+						<div class="owl-carousel home-owl-carousel custom-carousel owl-theme">
+		<?php
+$ret=mysqli_query($con,"select * from addproduct where Cat_Id=3");
+while ($row=mysqli_fetch_array($ret)) 
+{
+	# code...
+
+
+?>
+
+						    	
+		<div class="item item-carousel">
+			<div class="products">
+				
+	<div class="product">		
+		<div class="product-image">
+			<div class="image">
+				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>">
+				<!--<img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>" data-echo=".../supplier/img/<?php// echo htmlentities($row['P_Id']);?>/<?php //echo htmlentities($row['P_Image']);?>"  width="180" height="300" alt=""></a>-->
+				<img src="supplier/img/<?php echo $row['P_Image']?>"width="180" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+			</div><!-- /.image -->			
+
+			                        		   
+		</div><!-- /.product-image -->
+			
+		
+		<div class="product-info text-left">
+			<h3 class="name"><a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><?php echo htmlentities($row['P_Name']);?></a></h3>
+			<div class="rating rateit-small"></div>
+			<div class="description"></div>
+
+			<div class="product-price">	
+				<span class="price">
+					Rs. <?php echo htmlentities($row['P_Price']);?>			</span>
+										     <span class="price-before-discount">Rs.<?php echo htmlentities($row['PS_Price']);?></span>
+									
+			</div><!-- /.product-price -->
+			
+		</div><!-- /.product-info -->
+					<div class="action"><a href="index.php?page=product&action=add&id=<?php echo $row['P_Id']; ?>" class="lnk btn btn-primary">Add to Cart</a></div>
+			</div><!-- /.product -->
+      
+			</div><!-- /.products -->
+		</div><!-- /.item -->
+	<?php } ?>
+	
+		
+								</div><!-- /.home-owl-carousel -->
+					</div><!-- /.product-slider -->
+				</div>
+
+
+
+
+
+
+		<div class="tab-pane" id="furniture">
+					<div class="product-slider">
+						<div class="owl-carousel home-owl-carousel custom-carousel owl-theme">
+		<?php
+$ret=mysqli_query($con,"select * from addproduct where Cat_Id=5");
+while ($row=mysqli_fetch_array($ret)) 
+{
+?>
+
+						    	
+		<div class="item item-carousel">
+			<div class="products">
+				
+	<div class="product">		
+		<div class="product-image">
+			<div class="image">
+				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>">
+				<!--<img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php //echo htmlentities($row['P_Image']);?>" data-echo=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php //echo htmlentities($row['P_Image']);?>"  width="180" height="300" alt=""></a>-->
+				<img src="supplier/img/<?php echo $row['P_Image']?>"width="180" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+			</div>		
+
+			                        		   
+		</div>
+			
+		
+		<div class="product-info text-left">
+			<h3 class="name"><a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><?php echo htmlentities($row['P_Name']);?></a></h3>
+			<div class="rating rateit-small"></div>
+			<div class="description"></div>
+
+			<div class="product-price">	
+				<span class="price">
+					Rs.<?php echo htmlentities($row['P_Price']);?>			</span>
+										     <span class="price-before-discount">Rs.<?php echo htmlentities($row['PS_Price']);?></span>
+									
+			</div>
+			
+		</div>
+					<div class="action"><a href="index.php?page=product&action=add&id=<?php echo $row['P_Id']; ?>" class="lnk btn btn-primary">Add to Cart</a></div>
+			</div>
+      
+			</div>
+		</div>
+	<?php } ?>
+	
+		
+								</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		    
+
+         <!-- ============================================== TABS ============================================== -->
+			<div class="sections prod-slider-small outer-top-small">
+				<div class="row">
+					<div class="col-md-6">
+	                   <section class="section">
+	                   	<h3 class="section-title">Tv</h3>
+	                   	<div class="owl-carousel homepage-owl-carousel custom-carousel outer-top-xs owl-theme" data-item="2">
+	   
+<?php
+$ret=mysqli_query($con,"select * from addproduct where Cat_Id=3 and Scat_Id=15");
+while ($row=mysqli_fetch_array($ret)) 
+{
+?>
+
+
+
+		<div class="item item-carousel">
+			<div class="products">
+				
+	<div class="product">		
+		<div class="product-image">
+			<div class="image">
+				<!--<a href="product-details.php?pid=<?php //echo htmlentities($row['P_Id']);?>"><img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php //echo htmlentities($row['P_Image']);?>" data-echo="supplier/img<?php //echo htmlentities($row['P_Id']);?>/<?php //echo htmlentities($row['P_Image']);?>"  width="180" height="300"></a>-->
+				<a href="product-details.php?pid="><img src="supplier/img/<?php echo $row['P_Image']?>"width="180" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+			</div><!-- /.image -->			                        		   
+		</div><!-- /.product-image -->
+			
+		
+		<div class="product-info text-left">
+			<h3 class="name"><a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><?php echo htmlentities($row['P_Name']);?></a></h3>
+			<div class="rating rateit-small"></div>
+			<div class="description"></div>
+
+			<div class="product-price">	
+				<span class="price">
+					Rs. <?php echo htmlentities($row['P_Price']);?>			</span>
+										     <span class="price-before-discount">Rs.<?php echo htmlentities($row['PS_Price']);?></span>
+									
+			</div>
+			
+		</div>
+					<div class="action"><a href="index.php?page=product&action=add&id=<?php echo $row['P_Id']; ?>" class="lnk btn btn-primary">Add to Cart</a></div>
+			</div>
+			</div>
+		</div>
+<?php }?>
+
+	
+			                   	</div>
+	                   </section>
+					</div>
+					<div class="col-md-6">
+						<section class="section">
+							<h3 class="section-title">Bike</h3>
+		                   	<div class="owl-carousel homepage-owl-carousel custom-carousel outer-top-xs owl-theme" data-item="2">
+	<?php
+$ret=mysqli_query($con,"select * from addproduct where Cat_Id=5 and Scat_Id=24");
+while ($row=mysqli_fetch_array($ret)) 
+{
+?>
+
+
+
+		<div class="item item-carousel">
+			<div class="products">
+				
+	<div class="product">		
+		<div class="product-image">
+			<div class="image">
+				<!--<a href="product-details.php?pid=<?php// echo htmlentities($row['P_Id']);?>"><img  src="supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>" data-echo="supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>"  width="300" height="300"></a>-->
+			<a href="product-details.php?pid="><img src="supplier/img/<?php echo $row['P_Image']?>"width="300" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+			</div><!-- /.image -->			                        		   
+		</div><!-- /.product-image -->
+			
+		
+		<div class="product-info text-left">
+			<h3 class="name"><a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><?php echo htmlentities($row['P_Name']);?></a></h3>
+			<div class="rating rateit-small"></div>
+			<div class="description"></div>
+
+			<div class="product-price">	
+				<span class="price">
+					Rs .<?php echo htmlentities($row['P_Price']);?>			</span>
+										     <span class="price-before-discount">Rs.<?php echo htmlentities($row['PS_Price']);?></span>
+									
+			</div>
+			
+		</div>
+					<div class="action"><a href="index.php?page=product&action=add&id=<?php echo $row['P_Id']; ?>" class="lnk btn btn-primary">Add to Cart</a></div>
+			</div>
+			</div>
+		</div>
+<?php }?>
+
+		
+	
+				                   	</div>
+	                   </section>
+
+					</div>
+				</div>
+			</div>
+		<!-- ============================================== TABS : END ============================================== -->
+
+		
+
+	<section class="section featured-product inner-xs wow fadeInUp">
+		<h3 class="section-title">Fashion</h3>
+		<div class="owl-carousel best-seller custom-carousel owl-theme outer-top-xs">
+			<?php
+$ret=mysqli_query($con,"select * from addproduct where Cat_id=4");
+while ($row=mysqli_fetch_array($ret)) 
+{
+	# code...
+
+
+?>
+				<div class="item">
+					<div class="products">
+
+
+
+
+												<div class="product">
+							<div class="product-micro">
+								<div class="row product-micro-row">
+									<div class="col col-xs-6">
+										<div class="product-image">
+											<div class="image">
+												<!--<a href="supplier/img/<?php// echo htmlentities($row['P_Id']);?><?php //echo htmlentities($row['P_Image']);?>" data-lightbox="image-1" data-title="<?php //echo htmlentities($row['P_Name']);?>">
+													<img data-echo="supplier/img/<?php// echo htmlentities($row['P_Id']);?><?php//echo htmlentities($row['P_Image']);?>" width="170" height="174" alt="">-->
+													<a href=""><img src="supplier/img/<?php echo $row['P_Image']?>"width="170" height="174"  alt="<?php $row['P_Name'] ?>"/></a>
+													<div class="zoom-overlay"></div>
+												</a>					
+											</div><!-- /.image -->
+
+										</div><!-- /.product-image -->
+									</div><!-- /.col -->
+									<div class="col col-xs-6">
+										<div class="product-info">
+											<h3 class="name"><a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><?php echo htmlentities($row['P_Name']);?></a></h3>
+											<div class="rating rateit-small"></div>
+											<div class="product-price">	
+												<span class="price">
+													Rs. <?php echo htmlentities($row['P_Price']);?>
+												</span>
+
+											</div><!-- /.product-price -->
+											<div class="action"><a href="index.php?page=product&action=add&id=<?php echo $row['P_Id']; ?>" class="lnk btn btn-primary">Add To Cart</a></div>
+										</div>
+									</div><!-- /.col -->
+								</div><!-- /.product-micro-row -->
+							</div><!-- /.product-micro -->
+						</div>
+
+
+											</div>
+				</div><?php } ?>
+							</div>
+		</section>
+<?php include('includes/brands-slider.php');?>
+</div>
+</div>
+<?php include('includes/footer.php');?>
+	
+	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	
+	<script src="assets/js/bootstrap.min.js"></script>
+	
+	<script src="assets/js/bootstrap-hover-dropdown.min.js"></script>
+	<script src="assets/js/owl.carousel.min.js"></script>
+	
+	<script src="assets/js/echo.min.js"></script>
+	<script src="assets/js/jquery.easing-1.3.min.js"></script>
+	<script src="assets/js/bootstrap-slider.min.js"></script>
+    <script src="assets/js/jquery.rateit.min.js"></script>
+    <script type="text/javascript" src="assets/js/lightbox.min.js"></script>
+    <script src="assets/js/bootstrap-select.min.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+	<script src="assets/js/scripts.js"></script>
+
+	<!-- For demo purposes – can be removed on production -->
+	
+	<script src="switchstylesheet/switchstylesheet.js"></script>
+	
+	<script>
+		$(document).ready(function(){ 
+			$(".changecolor").switchstylesheet( { seperator:"color"} );
+			$('.show-theme-options').click(function(){
+				$(this).parent().toggleClass('open');
+				return false;
+			});
+		});
+
+		$(window).bind("load", function() {
+		   $('.show-theme-options').delay(2000).trigger('click');
+		});
+	</script>
+	<!-- For demo purposes – can be removed on production : End -->
+
+	
+
 </body>
-<!-- END BODY -->
 </html>

@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-$cid=intval($_GET['cid']);
+$cid=intval($_GET['scid']);
 if(isset($_GET['action']) && $_GET['action']=="add"){
 	$id=intval($_GET['id']);
 	if(isset($_SESSION['cart'][$id])){
@@ -109,27 +109,6 @@ header('location:my-wishlist.php');
 		<div class='row outer-bottom-sm'>
 			<div class='col-md-3 sidebar'>
 	            <!-- ================================== TOP NAVIGATION ================================== -->
-<div class="side-menu animate-dropdown outer-bottom-xs">       
-<div class="side-menu animate-dropdown outer-bottom-xs">
-    <div class="head"><i class="icon fa fa-align-justify fa-fw"></i>Sub Categories</div>        
-    <nav class="yamm megamenu-horizontal" role="navigation">
-  
-        <ul class="nav">
-            <li class="dropdown menu-item">
-              <?php $sql=mysqli_query($con,"select Scat_Id,Scat_Name  from subcategory where Cat_Id='$cid'");
-
-while($row=mysqli_fetch_array($sql))
-{
-    ?>
-                <a href="sub-category.php?scid=<?php echo $row['Scat_Id'];?>" class="dropdown-toggle"><i class="icon fa fa-desktop fa-fw"></i>
-                <?php echo $row['Scat_Name'];?></a>
-                <?php }?>
-                        
-</li>
-</ul>
-    </nav>
-</div>
-</div><!-- /.side-menu -->
 <!-- ================================== TOP NAVIGATION : END ================================== -->	            <div class="sidebar-module-container">
 	            	<h3 class="section-title">shop by</h3>
 	            	<div class="sidebar-filter">
@@ -170,7 +149,7 @@ while($row=mysqli_fetch_array($sql))
 	<div id="category" class="category-carousel hidden-xs">
 		<div class="item">	
 			<div class="image">
-				<img src="assets/images/banners/cat-banner-1.jpg" alt="" class="img-responsive">
+				<img src="assets/images/banners/cat-banner-2.jpg" alt="" class="img-responsive">
 			</div>
 			<div class="container-fluid">
 				<div class="caption vertical-top text-left">
@@ -178,13 +157,13 @@ while($row=mysqli_fetch_array($sql))
 						<br />
 					</div>
 
-					       <?php $sql=mysqli_query($con,"select Cat_Name  from category where Cat_Id='$cid'");
+					       <?php $sql=mysqli_query($con,"select Scat_Name  from subcategory where Scat_Id='$cid'");
 while($row=mysqli_fetch_array($sql))
 {
     ?>
 
 					<div class="excerpt hidden-sm hidden-md">
-						<?php echo htmlentities($row['Cat_Name']);?>
+						<?php echo htmlentities($row['Scat_Name']);?>
 					</div>
 			<?php } ?>
 			
@@ -199,7 +178,7 @@ while($row=mysqli_fetch_array($sql))
 							<div class="category-product  inner-top-vs">
 								<div class="row">									
 			<?php
-$ret=mysqli_query($con,"select * from addproduct where Cat_Id='$cid'");
+$ret=mysqli_query($con,"select * from addproduct where Scat_Id='$cid'");
 $num=mysqli_num_rows($ret);
 if($num>0)
 {
@@ -210,9 +189,7 @@ while ($row=mysqli_fetch_array($ret))
 	<div class="product">		
 		<div class="product-image">
 			<div class="image">
-				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>">
-				<!--<img  src="assets/images/blank.gif" data-echo="supplier/img/<?php// echo htmlentities($row['P_Id']);?><?php// echo htmlentities($row['P_Image']);?>" alt="" width="200" height="300"></a>-->
-				<img src="supplier/img/<?php echo $row['P_Image']?>"width="200" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><img  src="assets/images/blank.gif" data-echo="supplier/img/<?php echo htmlentities($row['P_Image']);?>" alt="<?php echo htmlentities($row['P_Name']);?>" width="200" height="300"></a>
 			</div><!-- /.image -->			                      		   
 		</div><!-- /.product-image -->
 			

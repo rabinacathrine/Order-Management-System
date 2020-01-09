@@ -2,6 +2,66 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
+// Code user Registration
+if(isset($_POST['submit']))
+{
+$name=$_POST['cname'];
+$pid=$_POST['productid'];
+$pname=$_POST['pname'];
+$pqty=$_POST['quantity'];
+$oid=$_POST['orderid'];
+$rdesc=$_POST['description'];
+$query=mysqli_query($con,"insert into replacement(C_Name,P_Id,O_Id,P_Name,P_Quantity,R_Description) values('$name','$pid','$oid','$pname','$pqty','$rdesc')");
+if($query)
+{
+	echo "<script>alert('query submitted successfully');</script>";
+}
+else{
+echo "<script>alert('Not submitted something went worng');</script>";
+}
+}
+// Code for User login
+/*if(isset($_POST['login']))
+{
+   $email=$_POST['email'];
+   $password=md5($_POST['password']);
+$query=mysqli_query($con,"SELECT * FROM customer WHERE C_Email='$email' and C_PassWord='$password'");
+$num=mysqli_fetch_array($query);
+if($num>0)
+{
+$extra="my-cart.php";
+$_SESSION['login']=$_POST['email'];
+$_SESSION['id']=$num['C_Id'];
+$_SESSION['username']=$num['C_UserName'];
+$uip=$_SERVER['REMOTE_ADDR'];
+$status=1;
+$log=mysqli_query($con,"insert into userlog(userEmail,userip,status) values('".$_SESSION['login']."','$uip','$status')");
+$host=$_SERVER['HTTP_HOST'];
+$uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+exit();
+}
+else
+{
+$extra="login.php";
+$email=$_POST['email'];
+$uip=$_SERVER['REMOTE_ADDR'];
+$status=0;
+$log=mysqli_query($con,"insert into userlog(userEmail,userip,status) values('$email','$uip','$status')");
+$host  = $_SERVER['HTTP_HOST'];
+$uri  = rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+$_SESSION['errmsg']="Invalid email id or Password";
+exit();
+}
+}
+*/
+
+?>
+<?php
+session_start();
+error_reporting(0);
+include('includes/config.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +75,7 @@ include('includes/config.php');
 	    <meta name="keywords" content="MediaCenter, Template, eCommerce">
 	    <meta name="robots" content="all">
 
-	    <title>PRODUCTS</title>
+	    <title>Replacement</title>
 	    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 	    <link rel="stylesheet" href="assets/css/main.css">
 	    <link rel="stylesheet" href="assets/css/green.css">
@@ -49,45 +109,12 @@ include('includes/config.php');
 
 </header>
 <!-- ============================================== HEADER : END ============================================== -->
-<div class="body-content outer-top-xs" id="top-banner-and-menu">
-	<div class="container">
-		<div class="furniture-container homepage-container">
-		<div class="row">
-		
-			<div class="col-xs-12 col-sm-12 col-md-3 sidebar">
-				<!-- ================================== TOP NAVIGATION ================================== -->
-	<?php include('includes/side-menu.php');?>
-<!-- ================================== TOP NAVIGATION : END ================================== -->
-			</div><!-- /.sidemenu-holder -->	
-			<div class="col-xs-12 col-sm-12 col-md-9 homebanner-holder">
-				<!-- ========================================== SECTION – HERO ========================================= -->
-			
-<div id="hero" class="homepage-slider3">
-	<div id="owl-main" class="owl-carousel owl-inner-nav owl-ui-sm">
-		<div class="full-width-slider">	
-			<div class="item" style="background-image: url(assets/images/sliders/f3.jpg);">
-				<!-- /.container-fluid -->
-			</div><!-- /.item -->
-		</div><!-- /.full-width-slider -->
-	    
-	    <div class="full-width-slider">
-			<div class="item full-width-slider" style="background-image: url(assets/images/sliders/g7.jpg);">
-			</div><!-- /.item -->
-		</div><!-- /.full-width-slider -->
-
-	</div><!-- /.owl-carousel -->
-</div>
-			
-<!-- ========================================= SECTION – HERO : END ========================================= -->	
-
-			
-
 <div class="breadcrumb">
 	<div class="container">
 		<div class="breadcrumb-inner">
 			<ul class="list-inline list-unstyled">
 				<li><a href="home.html">Home</a></li>
-				<li class='active'>Products</li>
+				<li class='active'>Replacement</li>
 			</ul>
 		</div><!-- /.breadcrumb-inner -->
 	</div><!-- /.container -->
@@ -98,48 +125,48 @@ include('includes/config.php');
 		<div class="track-order-page inner-bottom-sm">
 			<div class="row">
 				<div class="col-md-12">
-	<h1><b>PRODUCTS</b></h1>
+	<h2>Replacement</h2>
+	<span class="title-tag inner-top-vs">Please enter your Order ID in the box below and press Enter. This was given to you on your receipt and in the confirmation email you should have received. </span>
+	
+	<form class="register-form outer-top-xs" role="form" method="post" name="submit" onSubmit="return valid();">
 	<?php
-						$sql = "SELECT Cat_Id, Cat_Name FROM  category order by Cat_Id desc limit 9";
-$query = mysqli_query($con,$sql);
-while($result = mysqli_fetch_array($query)){
-  // echo $result['Cat_Name'];
-   ?>
-   <h2><?php echo $result['Cat_Name']?></h2>
-   <!--<div class="col col_14 product_gallery">-->
-   <hr>
-   <?php
-   $sql1 = "SELECT * FROM addproduct WHERE Cat_Id=".$result['Cat_Id'];
-   $query1 = mysqli_query($con,$sql1);
-   while($row  = mysqli_fetch_array($query1)){
-     // echo $row['P_Name'];?>
-	 <div class="col col_14 product_gallery">
-	 <a href="product-details.php?pid=<?php echo $row['P_Id'] ?>"><img src="supplier/img/<?php echo $row['P_Image'] ?>" alt="<?php echo $row['P_Name']?>" /></a>
-	 <h3><?php echo $row['P_Name']?></h3>
-	 <p class="product_price">Rs <?php echo $row['P_Price']?></p>
-	 <!--<a href="product-details.php?pid=<?php// echo htmlentities($row['P_Id']);?>">
-				<!--<img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>" data-echo=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>"  width="180" height="300" alt=""></a>-->
-				<!--<img src="supplier/img/<?php //echo $row['P_Image']?>"width="180" height="300"  alt="<?php// $row['P_Name'] ?>"/></a>-->
-			
-	 <!--<a href="productdetail.php?xxxx=<?php// echo $row['P_Id'] ?>" class="add_to_cart">Add to Cart</a>-->
-	</div> 
-	<a href="#" class="more float_r">View all</a>
-	<div class="cleaner h50"></div>
-            
-	 <?php
-   }
-}
+	$sql=mysqli_query("select* from customer,order_detail_user where C_Id=$sess_u");
+	$row=mysqli_fetch_array($con,$sql);
+	
+		
+	?>
+<div class="form-group">
+	    	<label class="info-title" for="cname">Name <span>*</span></label>
+	    	<input type="text" class="form-control unicase-form-control text-input" id="cname" name="cname" value="<?php echo $row['C_UserName'];?>">
+	  	</div>
 
-					
-			?>	
 
-            
-			 <!-- END of content -->
-       <!-- <div class="cleaner"></div>-->
-    </div> <!-- END of main -->
-    
-        
+		<div class="form-group">
+	    	<label class="info-title" for="exampleInputEmail2">product Id <span>*</span></label>
+	    	<input type="text" class="form-control unicase-form-control text-input" id="pid" name="piroductd" required >
+	    	       <span id="user-availability-status1" style="font-size:12px;"></span>
+	  	</div>
 
+<div class="form-group">
+	    	<label class="info-title" for="product name">Product Name <span>*</span></label>
+	    	<input type="text" class="form-control unicase-form-control text-input" id="pname" name="pname" maxlength="10" required >
+	  	</div>
+
+<div class="form-group">
+	    	<label class="info-title" for="product quantity">Product qty <span>*</span></label>
+	    	<input type="text" class="form-control unicase-form-control text-input" id="quantity" name="quantity"  required >
+	  	</div>
+
+<div class="form-group">
+	    	<label class="info-title" for="orderid">Order Id. <span>*</span></label>
+	    	<input type="text" class="form-control unicase-form-control text-input" id="orderid" name="orderid" required >
+	  	</div>
+	  		<div class="form-group">
+		    <label class="info-title" for="exampleOrderId1">Description</label>
+		    <input type="text" class="form-control unicase-form-control text-input" name="description" id="description" >
+		</div>
+	  	<button type="submit" name="submit" class="btn-upper btn btn-primary checkout-page-button">Submit</button>
+	</form>	
 </div>			</div><!-- /.row -->
 		</div><!-- /.sigin-in-->
 		<!-- ============================================== BRANDS CAROUSEL ============================================== -->
@@ -189,6 +216,3 @@ while($result = mysqli_fetch_array($query)){
 </body>
 </html>
 
-
- 
-		

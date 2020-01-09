@@ -2,16 +2,16 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-$cid=intval($_GET['cid']);
+$cid=intval($_GET['scid']);
 if(isset($_GET['action']) && $_GET['action']=="add"){
 	$id=intval($_GET['id']);
 	if(isset($_SESSION['cart'][$id])){
 		$_SESSION['cart'][$id]['quantity']++;
 	}else{
 		$sql_p="SELECT * FROM addproduct WHERE P_Id={$id}";
-		$query_p=mysqli_query($con,$sql_p);
-		if(mysqli_num_rows($query_p)!=0){
-			$row_p=mysqli_fetch_array($query_p);
+		$query_p=mysql_query($sql_p);
+		if(mysql_num_rows($query_p)!=0){
+			$row_p=mysql_fetch_array($query_p);
 			$_SESSION['cart'][$row_p['P_Id']]=array("quantity" => 1, "price" => $row_p['P_Price']);
 			header('location:my-cart.php');
 		}else{
@@ -27,7 +27,7 @@ header('location:login.php');
 }
 else
 {
-mysqli_query($con,"insert into wishlist(C_Id,P_Id) values('".$_SESSION['id']."','".$_GET['pid']."')");
+mysql_query("insert into wishlist(C_Id,P_Id) values('".$_SESSION['id']."','".$_GET['pid']."')");
 echo "<script>alert('Product aaded in wishlist');</script>";
 header('location:my-wishlist.php');
 
@@ -46,12 +46,8 @@ header('location:my-wishlist.php');
 	    <meta name="keywords" content="MediaCenter, Template, eCommerce">
 	    <meta name="robots" content="all">
 
-	    <title>Product Category</title>
-
-	    <!-- Bootstrap Core CSS -->
+	    <title>Product SubCategory</title>
 	    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-	    
-	    <!-- Customizable CSS -->
 	    <link rel="stylesheet" href="assets/css/main.css">
 	    <link rel="stylesheet" href="assets/css/green.css">
 	    <link rel="stylesheet" href="assets/css/owl.carousel.css">
@@ -61,8 +57,6 @@ header('location:my-wishlist.php');
 		<link rel="stylesheet" href="assets/css/animate.min.css">
 		<link rel="stylesheet" href="assets/css/rateit.css">
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
-
-		<!-- Demo Purpose Only. Should be removed in production -->
 		<link rel="stylesheet" href="assets/css/config.css">
 
 		<link href="assets/css/green.css" rel="alternate stylesheet" title="Green color">
@@ -70,10 +64,6 @@ header('location:my-wishlist.php');
 		<link href="assets/css/red.css" rel="alternate stylesheet" title="Red color">
 		<link href="assets/css/orange.css" rel="alternate stylesheet" title="Orange color">
 		<link href="assets/css/dark-green.css" rel="alternate stylesheet" title="Darkgreen color">
-		<!-- Demo Purpose Only. Should be removed in production : END -->
-
-		
-		<!-- Icons/Glyphs -->
 		<link rel="stylesheet" href="assets/css/font-awesome.min.css">
 
         <!-- Fonts --> 
@@ -81,13 +71,6 @@ header('location:my-wishlist.php');
 		
 		<!-- Favicon -->
 		<link rel="shortcut icon" href="assets/images/favicon.ico">
-
-		<!-- HTML5 elements and media queries Support for IE8 : HTML5 shim and Respond.js -->
-		<!--[if lt IE 9]>
-			<script src="assets/js/html5shiv.js"></script>
-			<script src="assets/js/respond.min.js"></script>
-		<![endif]-->
-
 	</head>
     <body class="cnt-home">
 	
@@ -109,27 +92,7 @@ header('location:my-wishlist.php');
 		<div class='row outer-bottom-sm'>
 			<div class='col-md-3 sidebar'>
 	            <!-- ================================== TOP NAVIGATION ================================== -->
-<div class="side-menu animate-dropdown outer-bottom-xs">       
-<div class="side-menu animate-dropdown outer-bottom-xs">
-    <div class="head"><i class="icon fa fa-align-justify fa-fw"></i>Sub Categories</div>        
-    <nav class="yamm megamenu-horizontal" role="navigation">
-  
-        <ul class="nav">
-            <li class="dropdown menu-item">
-              <?php $sql=mysqli_query($con,"select Scat_Id,Scat_Name  from subcategory where Cat_Id='$cid'");
-
-while($row=mysqli_fetch_array($sql))
-{
-    ?>
-                <a href="sub-category.php?scid=<?php echo $row['Scat_Id'];?>" class="dropdown-toggle"><i class="icon fa fa-desktop fa-fw"></i>
-                <?php echo $row['Scat_Name'];?></a>
-                <?php }?>
-                        
-</li>
-</ul>
-    </nav>
-</div>
-</div><!-- /.side-menu -->
+<!-- /.side-menu -->
 <!-- ================================== TOP NAVIGATION : END ================================== -->	            <div class="sidebar-module-container">
 	            	<h3 class="section-title">shop by</h3>
 	            	<div class="sidebar-filter">
@@ -139,15 +102,15 @@ while($row=mysqli_fetch_array($sql))
 		<h4 class="widget-title">Category</h4>
 	</div>
 	<div class="sidebar-widget-body m-t-10">
-	         <?php $sql=mysqli_query($con,"select Cat_Id,Cat_Name  from category");
-while($row=mysqli_fetch_array($sql))
+	         <?php $sql=mysql_query("select Cat_Id,Cat_Name from category");
+while($row=mysql_fetch_array($sql))
 {
     ?>
 		<div class="accordion">
 	    	<div class="accordion-group">
 	            <div class="accordion-heading">
-	                <a href="category.php?cid=<?php echo $row['Cat_Id'];?>"  class="accordion-toggle collapsed">
-	                   <?php echo $row['Cat_Name'];?>
+	                <a href="category.php?cid=<?php echo htmlentities($row['Cat_Id']);?>"  class="accordion-toggle collapsed">
+	                   <?php echo htmlentities($row['Cat_Name']);?>
 	                </a>
 	            </div>  
 	        </div>
@@ -170,7 +133,7 @@ while($row=mysqli_fetch_array($sql))
 	<div id="category" class="category-carousel hidden-xs">
 		<div class="item">	
 			<div class="image">
-				<img src="assets/images/banners/cat-banner-1.jpg" alt="" class="img-responsive">
+				<img src="assets/images/banners/cat-banner-2.jpg" alt="" class="img-responsive">
 			</div>
 			<div class="container-fluid">
 				<div class="caption vertical-top text-left">
@@ -178,13 +141,13 @@ while($row=mysqli_fetch_array($sql))
 						<br />
 					</div>
 
-					       <?php $sql=mysqli_query($con,"select Cat_Name  from category where Cat_Id='$cid'");
-while($row=mysqli_fetch_array($sql))
+					       <?php $sql=mysql_query("select  Scat_Name  from  subcategory where Scat_Id='$cid'");
+while($row=mysql_fetch_array($sql))
 {
     ?>
 
 					<div class="excerpt hidden-sm hidden-md">
-						<?php echo htmlentities($row['Cat_Name']);?>
+						<?php echo htmlentities($row['Scat_Name']);?>
 					</div>
 			<?php } ?>
 			
@@ -197,22 +160,23 @@ while($row=mysqli_fetch_array($sql))
 					<div id="myTabContent" class="tab-content">
 						<div class="tab-pane active " id="grid-container">
 							<div class="category-product  inner-top-vs">
-								<div class="row">									
+							<div class="row">
 			<?php
-$ret=mysqli_query($con,"select * from addproduct where Cat_Id='$cid'");
-$num=mysqli_num_rows($ret);
+$ret=mysql_query("select * from addproduct where Scat_Id='$cid'");
+    $cnt=0;
+    $num=mysql_num_rows($ret);
 if($num>0)
 {
-while ($row=mysqli_fetch_array($ret)) 
-{?>							
-		<div class="col-sm-6 col-md-4 wow fadeInUp">
+while ($row=mysql_fetch_array($ret)) 
+{?>	
+																	
+						
+		<div class="col-sm-4 col-md-4 wow fadeInUp">
 			<div class="products">				
 	<div class="product">		
 		<div class="product-image">
 			<div class="image">
-				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>">
-				<!--<img  src="assets/images/blank.gif" data-echo="supplier/img/<?php// echo htmlentities($row['P_Id']);?><?php// echo htmlentities($row['P_Image']);?>" alt="" width="200" height="300"></a>-->
-				<img src="supplier/img/<?php echo $row['P_Image']?>"width="200" height="300"  alt="<?php $row['P_Name'] ?>"/></a>
+				<a href="product-details.php?pid=<?php echo htmlentities($row['P_Id']);?>"><img  src="assets/images/blank.gif" data-echo="admin/productimages/<?php echo htmlentities($row['P_Name']);?>/<?php echo htmlentities($row['P_Image']);?>" alt="" width="210" height="300"></a>
 			</div><!-- /.image -->			                      		   
 		</div><!-- /.product-image -->
 			
@@ -253,14 +217,22 @@ while ($row=mysqli_fetch_array($ret))
 				</div><!-- /.action -->
 			</div><!-- /.cart -->
 			</div>
+
 			</div>
+			
 		</div>
-	  <?php } } else {?>
+
+	  <?php 
+
+	} } else{
+?>
+	<div class="col-sm-4 col-md-4 wow fadeInUp">
+	<h3>No Products Found</h3>
+	</div>
 	
-		<div class="col-sm-6 col-md-4 wow fadeInUp"> <h3>No Product Found</h3>
-		</div>
+	<?php } ?>
 		
-<?php } ?>	
+	
 		
 	
 		
@@ -281,7 +253,7 @@ while ($row=mysqli_fetch_array($ret))
 				</div><!-- /.search-result-container -->
 
 			</div><!-- /.col -->
-		</div></div>
+		</div>
 		<?php include('includes/brands-slider.php');?>
 
 </div>

@@ -15,7 +15,7 @@ include('includes/config.php');
 	    <meta name="keywords" content="MediaCenter, Template, eCommerce">
 	    <meta name="robots" content="all">
 
-	    <title>PRODUCTS</title>
+	    <title>Track Orders</title>
 	    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 	    <link rel="stylesheet" href="assets/css/main.css">
 	    <link rel="stylesheet" href="assets/css/green.css">
@@ -49,45 +49,12 @@ include('includes/config.php');
 
 </header>
 <!-- ============================================== HEADER : END ============================================== -->
-<div class="body-content outer-top-xs" id="top-banner-and-menu">
-	<div class="container">
-		<div class="furniture-container homepage-container">
-		<div class="row">
-		
-			<div class="col-xs-12 col-sm-12 col-md-3 sidebar">
-				<!-- ================================== TOP NAVIGATION ================================== -->
-	<?php include('includes/side-menu.php');?>
-<!-- ================================== TOP NAVIGATION : END ================================== -->
-			</div><!-- /.sidemenu-holder -->	
-			<div class="col-xs-12 col-sm-12 col-md-9 homebanner-holder">
-				<!-- ========================================== SECTION – HERO ========================================= -->
-			
-<div id="hero" class="homepage-slider3">
-	<div id="owl-main" class="owl-carousel owl-inner-nav owl-ui-sm">
-		<div class="full-width-slider">	
-			<div class="item" style="background-image: url(assets/images/sliders/f3.jpg);">
-				<!-- /.container-fluid -->
-			</div><!-- /.item -->
-		</div><!-- /.full-width-slider -->
-	    
-	    <div class="full-width-slider">
-			<div class="item full-width-slider" style="background-image: url(assets/images/sliders/g7.jpg);">
-			</div><!-- /.item -->
-		</div><!-- /.full-width-slider -->
-
-	</div><!-- /.owl-carousel -->
-</div>
-			
-<!-- ========================================= SECTION – HERO : END ========================================= -->	
-
-			
-
 <div class="breadcrumb">
 	<div class="container">
 		<div class="breadcrumb-inner">
 			<ul class="list-inline list-unstyled">
 				<li><a href="home.html">Home</a></li>
-				<li class='active'>Products</li>
+				<li class='active'>Track your orders</li>
 			</ul>
 		</div><!-- /.breadcrumb-inner -->
 	</div><!-- /.container -->
@@ -98,48 +65,19 @@ include('includes/config.php');
 		<div class="track-order-page inner-bottom-sm">
 			<div class="row">
 				<div class="col-md-12">
-	<h1><b>PRODUCTS</b></h1>
-	<?php
-						$sql = "SELECT Cat_Id, Cat_Name FROM  category order by Cat_Id desc limit 9";
-$query = mysqli_query($con,$sql);
-while($result = mysqli_fetch_array($query)){
-  // echo $result['Cat_Name'];
-   ?>
-   <h2><?php echo $result['Cat_Name']?></h2>
-   <!--<div class="col col_14 product_gallery">-->
-   <hr>
-   <?php
-   $sql1 = "SELECT * FROM addproduct WHERE Cat_Id=".$result['Cat_Id'];
-   $query1 = mysqli_query($con,$sql1);
-   while($row  = mysqli_fetch_array($query1)){
-     // echo $row['P_Name'];?>
-	 <div class="col col_14 product_gallery">
-	 <a href="product-details.php?pid=<?php echo $row['P_Id'] ?>"><img src="supplier/img/<?php echo $row['P_Image'] ?>" alt="<?php echo $row['P_Name']?>" /></a>
-	 <h3><?php echo $row['P_Name']?></h3>
-	 <p class="product_price">Rs <?php echo $row['P_Price']?></p>
-	 <!--<a href="product-details.php?pid=<?php// echo htmlentities($row['P_Id']);?>">
-				<!--<img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>" data-echo=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>"  width="180" height="300" alt=""></a>-->
-				<!--<img src="supplier/img/<?php //echo $row['P_Image']?>"width="180" height="300"  alt="<?php// $row['P_Name'] ?>"/></a>-->
-			
-	 <!--<a href="productdetail.php?xxxx=<?php// echo $row['P_Id'] ?>" class="add_to_cart">Add to Cart</a>-->
-	</div> 
-	<a href="#" class="more float_r">View all</a>
-	<div class="cleaner h50"></div>
-            
-	 <?php
-   }
-}
-
-					
-			?>	
-
-            
-			 <!-- END of content -->
-       <!-- <div class="cleaner"></div>-->
-    </div> <!-- END of main -->
-    
-        
-
+	<h2>Track your Order</h2>
+	<span class="title-tag inner-top-vs">Please enter your Order ID in the box below and press Enter. This was given to you on your receipt and in the confirmation email you should have received. </span>
+	<form class="register-form outer-top-xs" role="form" method="post" action="order-details.php">
+		<div class="form-group">
+		    <label class="info-title" for="exampleOrderId1">Order ID</label>
+		    <input type="text" class="form-control unicase-form-control text-input" name="orderid" id="exampleOrderId1" >
+		</div>
+	  	<div class="form-group">
+		    <label class="info-title" for="exampleBillingEmail1">Registered Email</label>
+		    <input type="email" class="form-control unicase-form-control text-input" name="email" id="exampleBillingEmail1" >
+		</div>
+	  	<button type="submit" name="submit" class="btn-upper btn btn-primary checkout-page-button">Track</button>
+	</form>	
 </div>			</div><!-- /.row -->
 		</div><!-- /.sigin-in-->
 		<!-- ============================================== BRANDS CAROUSEL ============================================== -->
@@ -188,7 +126,3 @@ while($result = mysqli_fetch_array($query)){
 
 </body>
 </html>
-
-
- 
-		

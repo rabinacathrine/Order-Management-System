@@ -2,7 +2,39 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
+
+if(isset($_POST['change']))
+{
+   $email=$_POST['email'];
+    $contact=$_POST['contact'];
+    $password=md5($_POST['password']);
+$query=mysqli_query($con,"SELECT * FROM customer WHERE C_Email='$email' and C_MoNo='$contact'");
+$num=mysqli_fetch_array($query);
+if($num>0)
+{
+$extra="forgot-password.php";
+mysqli_query($con,"update customer set PassWord='$password' WHERE C_Email='$email' and C_MoNo='$contact' ");
+$host=$_SERVER['HTTP_HOST'];
+$uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+$_SESSION['errmsg']="Password Changed Successfully";
+exit();
+}
+else
+{
+$extra="forgot-password.php";
+$host  = $_SERVER['HTTP_HOST'];
+$uri  = rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
+header("location:http://$host$uri/$extra");
+$_SESSION['errmsg']="Invalid email id or Contact no";
+exit();
+}
+}
+
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -15,28 +47,59 @@ include('includes/config.php');
 	    <meta name="keywords" content="MediaCenter, Template, eCommerce">
 	    <meta name="robots" content="all">
 
-	    <title>PRODUCTS</title>
+	    <title>Shopping Portal | Forgot Password</title>
+
+	    <!-- Bootstrap Core CSS -->
 	    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	    
+	    <!-- Customizable CSS -->
 	    <link rel="stylesheet" href="assets/css/main.css">
 	    <link rel="stylesheet" href="assets/css/green.css">
 	    <link rel="stylesheet" href="assets/css/owl.carousel.css">
 		<link rel="stylesheet" href="assets/css/owl.transitions.css">
+		<!--<link rel="stylesheet" href="assets/css/owl.theme.css">-->
 		<link href="assets/css/lightbox.css" rel="stylesheet">
 		<link rel="stylesheet" href="assets/css/animate.min.css">
 		<link rel="stylesheet" href="assets/css/rateit.css">
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+
+		<!-- Demo Purpose Only. Should be removed in production -->
 		<link rel="stylesheet" href="assets/css/config.css">
+
 		<link href="assets/css/green.css" rel="alternate stylesheet" title="Green color">
 		<link href="assets/css/blue.css" rel="alternate stylesheet" title="Blue color">
 		<link href="assets/css/red.css" rel="alternate stylesheet" title="Red color">
 		<link href="assets/css/orange.css" rel="alternate stylesheet" title="Orange color">
 		<link href="assets/css/dark-green.css" rel="alternate stylesheet" title="Darkgreen color">
+		<!-- Demo Purpose Only. Should be removed in production : END -->
+
+		
+		<!-- Icons/Glyphs -->
 		<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+
+        <!-- Fonts --> 
 		<link href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,700' rel='stylesheet' type='text/css'>
+		
+		<!-- Favicon -->
 		<link rel="shortcut icon" href="assets/images/favicon.ico">
+<script type="text/javascript">
+function valid()
+{
+ if(document.register.password.value!= document.register.confirmpassword.value)
+{
+alert("Password and Confirm Password Field do not match  !!");
+document.register.confirmpassword.focus();
+return false;
+}
+return true;
+}
+</script>
 	</head>
     <body class="cnt-home">
 	
+		
+	
+		<!-- ============================================== HEADER ============================================== -->
 <header class="header-style-1">
 
 	<!-- ============================================== TOP MENU ============================================== -->
@@ -48,46 +111,14 @@ include('includes/config.php');
 <!-- ============================================== NAVBAR : END ============================================== -->
 
 </header>
+
 <!-- ============================================== HEADER : END ============================================== -->
-<div class="body-content outer-top-xs" id="top-banner-and-menu">
-	<div class="container">
-		<div class="furniture-container homepage-container">
-		<div class="row">
-		
-			<div class="col-xs-12 col-sm-12 col-md-3 sidebar">
-				<!-- ================================== TOP NAVIGATION ================================== -->
-	<?php include('includes/side-menu.php');?>
-<!-- ================================== TOP NAVIGATION : END ================================== -->
-			</div><!-- /.sidemenu-holder -->	
-			<div class="col-xs-12 col-sm-12 col-md-9 homebanner-holder">
-				<!-- ========================================== SECTION – HERO ========================================= -->
-			
-<div id="hero" class="homepage-slider3">
-	<div id="owl-main" class="owl-carousel owl-inner-nav owl-ui-sm">
-		<div class="full-width-slider">	
-			<div class="item" style="background-image: url(assets/images/sliders/f3.jpg);">
-				<!-- /.container-fluid -->
-			</div><!-- /.item -->
-		</div><!-- /.full-width-slider -->
-	    
-	    <div class="full-width-slider">
-			<div class="item full-width-slider" style="background-image: url(assets/images/sliders/g7.jpg);">
-			</div><!-- /.item -->
-		</div><!-- /.full-width-slider -->
-
-	</div><!-- /.owl-carousel -->
-</div>
-			
-<!-- ========================================= SECTION – HERO : END ========================================= -->	
-
-			
-
 <div class="breadcrumb">
 	<div class="container">
 		<div class="breadcrumb-inner">
 			<ul class="list-inline list-unstyled">
 				<li><a href="home.html">Home</a></li>
-				<li class='active'>Products</li>
+				<li class='active'>Forgot Password</li>
 			</ul>
 		</div><!-- /.breadcrumb-inner -->
 	</div><!-- /.container -->
@@ -95,57 +126,49 @@ include('includes/config.php');
 
 <div class="body-content outer-top-bd">
 	<div class="container">
-		<div class="track-order-page inner-bottom-sm">
+		<div class="sign-in-page inner-bottom-sm">
 			<div class="row">
-				<div class="col-md-12">
-	<h1><b>PRODUCTS</b></h1>
-	<?php
-						$sql = "SELECT Cat_Id, Cat_Name FROM  category order by Cat_Id desc limit 9";
-$query = mysqli_query($con,$sql);
-while($result = mysqli_fetch_array($query)){
-  // echo $result['Cat_Name'];
-   ?>
-   <h2><?php echo $result['Cat_Name']?></h2>
-   <!--<div class="col col_14 product_gallery">-->
-   <hr>
-   <?php
-   $sql1 = "SELECT * FROM addproduct WHERE Cat_Id=".$result['Cat_Id'];
-   $query1 = mysqli_query($con,$sql1);
-   while($row  = mysqli_fetch_array($query1)){
-     // echo $row['P_Name'];?>
-	 <div class="col col_14 product_gallery">
-	 <a href="product-details.php?pid=<?php echo $row['P_Id'] ?>"><img src="supplier/img/<?php echo $row['P_Image'] ?>" alt="<?php echo $row['P_Name']?>" /></a>
-	 <h3><?php echo $row['P_Name']?></h3>
-	 <p class="product_price">Rs <?php echo $row['P_Price']?></p>
-	 <!--<a href="product-details.php?pid=<?php// echo htmlentities($row['P_Id']);?>">
-				<!--<img  src=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>" data-echo=".../supplier/img/<?php //echo htmlentities($row['P_Id']);?>/<?php// echo htmlentities($row['P_Image']);?>"  width="180" height="300" alt=""></a>-->
-				<!--<img src="supplier/img/<?php //echo $row['P_Image']?>"width="180" height="300"  alt="<?php// $row['P_Name'] ?>"/></a>-->
-			
-	 <!--<a href="productdetail.php?xxxx=<?php// echo $row['P_Id'] ?>" class="add_to_cart">Add to Cart</a>-->
-	</div> 
-	<a href="#" class="more float_r">View all</a>
-	<div class="cleaner h50"></div>
-            
-	 <?php
-   }
-}
+				<!-- Sign-in -->			
+<div class="col-md-6 col-sm-6 sign-in">
+	<h4 class="">Forgot password</h4>
+	<form class="register-form outer-top-xs" name="register" method="post">
+	<span style="color:red;" >
+<?php
+echo htmlentities($_SESSION['errmsg']);
+?>
+<?php
+echo htmlentities($_SESSION['errmsg']="");
+?>
+	</span>
+		<div class="form-group">
+		    <label class="info-title" for="exampleInputEmail1">Email Address <span>*</span></label>
+		    <input type="email" name="email" class="form-control unicase-form-control text-input" id="exampleInputEmail1" required >
+		</div>
+	  	<div class="form-group">
+		    <label class="info-title" for="exampleInputPassword1">Contact no <span>*</span></label>
+		 <input type="text" name="contact" class="form-control unicase-form-control text-input" id="contact" required>
+		</div>
+<div class="form-group">
+	    	<label class="info-title" for="password">Password. <span>*</span></label>
+	    	<input type="password" class="form-control unicase-form-control text-input" id="password" name="password"  required >
+	  	</div>
 
-					
-			?>	
+<div class="form-group">
+	    	<label class="info-title" for="confirmpassword">Confirm Password. <span>*</span></label>
+	    	<input type="password" class="form-control unicase-form-control text-input" id="confirmpassword" name="confirmpassword" required >
+	  	</div>
 
-            
-			 <!-- END of content -->
-       <!-- <div class="cleaner"></div>-->
-    </div> <!-- END of main -->
-    
-        
 
-</div>			</div><!-- /.row -->
-		</div><!-- /.sigin-in-->
-		<!-- ============================================== BRANDS CAROUSEL ============================================== -->
-<div 
+		
+	  	<button type="submit" class="btn-upper btn btn-primary checkout-page-button" name="change">Change</button>
+	</form>					
+</div>
+<!-- Sign-in -->
 
-<?php echo include('includes/brands-slider.php');?>
+
+<!-- create a new account -->			</div><!-- /.row -->
+		</div>
+<?php include('includes/brands-slider.php');?>
 </div>
 </div>
 <?php include('includes/footer.php');?>
@@ -188,7 +211,3 @@ while($result = mysqli_fetch_array($query)){
 
 </body>
 </html>
-
-
- 
-		
